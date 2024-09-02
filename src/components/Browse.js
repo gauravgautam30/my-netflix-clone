@@ -1,7 +1,10 @@
+import Header from "./Header";
+
 const Browse = () => {
   return (
     <div>
-      <h1>Browse here for movies list</h1>
+      <Header />
+
       {/* Render the movies here */}
     </div>
   );

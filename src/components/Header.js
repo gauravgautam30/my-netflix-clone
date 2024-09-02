@@ -1,55 +1,70 @@
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { LOGO } from "../utils/constants";
+import { auth } from "../utils/firebase";
+import { signOut } from "firebase/auth";
+import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from "react";
+import { addUser, removeUser } from "../utils/userSlice";
+import { onAuthStateChanged } from "firebase/auth";
 
 const Header = () => {
-  const [isSignIn, setIsSignIn] = useState(true);
-  const toggleSignInForm = () => {
-    setIsSignIn((s) => !s);
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const user = useSelector((store) => store.user);
+  // console.log(user);
+  useEffect(() => {
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        const { uid, email, displayName, photoURL } = user;
+        dispatch(
+          addUser({
+            uid: uid,
+            email: email,
+            displayName: displayName,
+            photoURL: photoURL,
+          })
+        );
+        navigate("/browse");
+      } else {
+        // User is signed out
+        dispatch(removeUser());
+        navigate("/");
+      }
+    });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleSignOut = () => {
+    signOut(auth)
+      .then(() => {
+        // Sign-out successful.
+
+        console.log("**", user);
+      })
+      .catch((error) => {
+        // An error happened.
+        navigate("/error");
+      });
   };
   return (
-    <div>
-      <div className="absolute h-36 w-52 mx-20 p-2 bg-gradient-to-b from-black">
-        <img
-          alt="logo"
-          src="https://cdn.cookielaw.org/logos/dd6b162f-1a32-456a-9cfe-897231c7763c/4345ea78-053c-46d2-b11e-09adaef973dc/Netflix_Logo_PMS.png"
-        />
-      </div>
-      <form className="absolute text-white w-fit p-10 mx-[430px] my-32 bg-black bg-opacity-80">
-        <h1 className="p-2 m-2 font-bold text-3xl">
-          {isSignIn ? "Sign In" : "Sign Up"}
-        </h1>
-        {!isSignIn && (
-          <input
-            type="text"
-            placeholder="First name"
-            className="p-4 m-2 w-full bg-gray-700 rounded-lg"
-          />
-        )}
-        {!isSignIn && (
-          <input
-            type="text"
-            placeholder="Last name"
-            className="p-4 m-2 w-full bg-gray-700 rounded-lg"
-          />
-        )}
-        <input
-          type="text"
-          placeholder="Email or mobile number"
-          className="p-4 m-2 w-full bg-gray-700 rounded-lg"
-        />
-        <input
-          type="password"
-          placeholder="Password"
-          className="p-4 m-2 w-full bg-gray-700 rounded-lg"
-        />
-        <button className="bg-red-700 p-4 m-2 my-6 w-full rounded-lg">
-          Sign In
-        </button>
-        <h1 className="w-ful cursor-pointer" onClick={() => toggleSignInForm()}>
-          {isSignIn
-            ? "New to Netflix? Sign up now."
-            : "Already registered? Sign in now."}
-        </h1>
-      </form>
+    <div className="absolute w-screen px-6 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
+      <img className="w-40 mx-auto md:mx-0" src={LOGO} alt="logo" />
+      {user && (
+        <div className="flex px-6">
+          <div className="p-2 m-2">
+            <img alt="userImg" src={user.photoURL} />
+          </div>
+
+          <div>
+            <button
+              onClick={() => handleSignOut()}
+              className="bg-slate-300 font-bold content-center p-2 m-2"
+            >
+              Sign Out
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
