@@ -16,7 +16,7 @@ const appRouter = createBrowserRouter([
 
 const Body = () => {
   return (
-    <div>
+    <div className="">
       <RouterProvider router={appRouter} />
       <div></div>
     </div>

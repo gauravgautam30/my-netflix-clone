@@ -13,7 +13,7 @@ const Header = () => {
   const user = useSelector((store) => store.user);
   // console.log(user);
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         const { uid, email, displayName, photoURL } = user;
         dispatch(
@@ -31,6 +31,9 @@ const Header = () => {
         navigate("/");
       }
     });
+    return () => {
+      unsubscribe();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -47,7 +50,7 @@ const Header = () => {
       });
   };
   return (
-    <div className="absolute w-screen px-6 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
+    <div className="absolute w-[98.7vw] px-6 bg-gradient-to-b from-black z-10 flex flex-col md:flex-row justify-between">
       <img className="w-40 mx-auto md:mx-0" src={LOGO} alt="logo" />
       {user && (
         <div className="flex px-6">
