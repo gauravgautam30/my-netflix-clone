@@ -1,11 +1,11 @@
 import { createSlice } from "@reduxjs/toolkit";
-import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
+// import useNowPlayingMovies from "../hooks/useNowPlayingMovies";
 
 const moviesSlice = createSlice({
   name: "movies",
   initialState: {
-    nowPlayingMovies: {},
-    trailerVideo: {},
+    nowPlayingMovies: [],
+    trailerVideo: [],
   },
   reducers: {
     addNowPlayingMovies: (state, action) => {

@@ -12,7 +12,7 @@ const useNowPlayingMovies = async () => {
         API_OPTIONS
       );
       const json = await data.json();
-      // console.log("NOW PLAYING: ", json.results);
+
       dispatch(addNowPlayingMovies(json.results));
     } catch (error) {
       console.log("ERROR ♨️", error);

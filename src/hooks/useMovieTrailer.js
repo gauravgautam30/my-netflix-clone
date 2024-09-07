@@ -13,7 +13,7 @@ const useMovieTrailer = (movieId) => {
     const json = await data.json();
     const list = json.results;
     const trailer = list.find((item) => item.type === "Trailer");
-    console.log("TRRR", trailer);
+
     dispatch(addTrailerVideos(trailer));
   };
   useEffect(() => {
